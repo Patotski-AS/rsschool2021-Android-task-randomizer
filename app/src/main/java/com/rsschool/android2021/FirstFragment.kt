@@ -52,8 +52,8 @@ class FirstFragment : Fragment() {
                     listener?.onFirstFragmentListener(min, max)
                 }
             } catch (e: NumberFormatException) {
-                //если данные не введены отобразится предупреждение
-                Toast.makeText(context, "No data entered", Toast.LENGTH_LONG).show()
+                //если данные не введены, или слишком большие(min+max>2147483647) отобразится предупреждение
+                Toast.makeText(context, "Invalid data entered", Toast.LENGTH_LONG).show()
             }
         }
     }

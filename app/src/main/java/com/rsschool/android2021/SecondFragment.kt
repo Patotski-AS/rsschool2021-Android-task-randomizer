@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import kotlin.random.Random
 
@@ -29,7 +30,6 @@ class SecondFragment : Fragment() {
         listener = context as OnSecondFragmentListener
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         result = view.findViewById(R.id.result)
@@ -41,13 +41,22 @@ class SecondFragment : Fragment() {
         result?.text = generate(min, max).toString()
 
         backButton?.setOnClickListener {
-            val previousNumber = result?.text.toString().toInt()
-            listener?.onSecondFragmentListener(previousNumber)
+            goToFirstFragment()
+        }
+
+        //Обработчик системной кнопки "Back"
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            goToFirstFragment()
         }
     }
 
     private fun generate(min: Int, max: Int): Int {
         return Random.nextInt(min, max)
+    }
+
+    private fun goToFirstFragment() {
+        val previousNumber = result?.text.toString().toInt()
+        listener?.onSecondFragmentListener(previousNumber)
     }
 
     companion object {
@@ -60,14 +69,14 @@ class SecondFragment : Fragment() {
         fun newInstance(min: Int, max: Int): SecondFragment {
             val fragment = SecondFragment()
             val args = Bundle()
-            args.putInt(MIN_VALUE_KEY,min)
-            args.putInt(MAX_VALUE_KEY,max)
+            args.putInt(MIN_VALUE_KEY, min)
+            args.putInt(MAX_VALUE_KEY, max)
             fragment.arguments = args
             return fragment
         }
 
         interface OnSecondFragmentListener {
-            fun onSecondFragmentListener(result:Int)
+            fun onSecondFragmentListener(result: Int)
         }
 
         private const val MIN_VALUE_KEY = "MIN_VALUE"
